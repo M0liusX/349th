@@ -11,7 +11,12 @@ config_version=4
 [application]
 
 config/name="349th"
+run/main_scene="res://Spawner.tscn"
 config/icon="res://icon.png"
+
+[autoload]
+
+Globals="*res://Globals.gd"
 
 [display]
 

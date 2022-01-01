@@ -1,0 +1,92 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Player/Player.gd" type="Script" id=1]
+[ext_resource path="res://Art/Player/bird1.png" type="Texture" id=2]
+[ext_resource path="res://Art/Background/Background1.png" type="Texture" id=3]
+
+[sub_resource type="Animation" id=6]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Player_Sprite:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Player_Body/Player_Sprite:frame_coords")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ) ]
+}
+
+[sub_resource type="Animation" id=7]
+resource_name = "fly"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Player_Body/Player_Sprite:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 1, 0 ), Vector2( 2, 0 ), Vector2( 3, 0 ) ]
+}
+
+[sub_resource type="RectangleShape2D" id=10]
+extents = Vector2( 8, 7 )
+
+[sub_resource type="RectangleShape2D" id=8]
+extents = Vector2( 8, 7 )
+
+[node name="Player_Scene" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="Background" type="Sprite" parent="."]
+visible = false
+texture = ExtResource( 3 )
+centered = false
+
+[node name="Player_Body" type="KinematicBody2D" parent="."]
+
+[node name="Player_Sprite" type="Sprite" parent="Player_Body"]
+texture = ExtResource( 2 )
+centered = false
+hframes = 4
+
+[node name="Player_Animator" type="AnimationPlayer" parent="Player_Body/Player_Sprite"]
+root_node = NodePath("../../..")
+autoplay = "fly"
+anims/RESET = SubResource( 6 )
+anims/fly = SubResource( 7 )
+
+[node name="Area2D" type="Area2D" parent="Player_Body/Player_Sprite"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player_Body/Player_Sprite/Area2D"]
+position = Vector2( 8, 7 )
+shape = SubResource( 10 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player_Body"]
+position = Vector2( 8, 7 )
+shape = SubResource( 8 )
+
+[node name="Fall_Timer" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
+[connection signal="area_entered" from="Player_Body/Player_Sprite/Area2D" to="." method="_on_Area2D_area_entered"]
+[connection signal="timeout" from="Fall_Timer" to="." method="_on_Fall_Timer_timeout"]
